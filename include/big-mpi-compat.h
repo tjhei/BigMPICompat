@@ -126,4 +126,59 @@ MPI_Type_contiguous_c(MPI_Count     count,
     }
 }
 
+int
+MPI_Send_c(const void * buf,
+           MPI_Count    count,
+           MPI_Datatype datatype,
+           int          dest,
+           int          tag,
+           MPI_Comm     comm)
+{
+  if (count <= BigMPICompat::mpi_max_signed_int)
+    return MPI_Send(buf, count, datatype, dest, tag, comm);
+
+  MPI_Datatype bigtype;
+  int          ierr;
+  ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+
+  ierr = MPI_Send(buf, 1, bigtype, dest, tag, comm);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+
+  ierr = MPI_Type_free(&bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+  return MPI_SUCCESS;
+}
+
+int
+MPI_Recv_c(void *       buf,
+           MPI_Count    count,
+           MPI_Datatype datatype,
+           int          source,
+           int          tag,
+           MPI_Comm     comm,
+           MPI_Status * status)
+{
+  if (count <= BigMPICompat::mpi_max_signed_int)
+    return MPI_Recv(buf, count, datatype, source, tag, comm, status);
+
+  MPI_Datatype bigtype;
+  int          ierr;
+  ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+
+  ierr = MPI_Recv(buf, 1, bigtype, source, tag, comm, status);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+
+  ierr = MPI_Type_free(&bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+  return MPI_SUCCESS;
+}
+
 #endif
