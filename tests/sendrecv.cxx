@@ -6,7 +6,7 @@
 
 
 void
-test_send_recv()
+test_send_recv_manual()
 {
   MPI_Comm comm = MPI_COMM_WORLD;
   int      myid;
@@ -48,7 +48,48 @@ test_send_recv()
   MPI_Type_free(&bigtype);
 
   if (myid == 0)
-    std::cout << "TEST big send_recv: OK" << std::endl;
+    std::cout << "TEST send_recv_manual: OK" << std::endl;
+}
+
+void
+test_send_and_recv()
+{
+  MPI_Comm comm = MPI_COMM_WORLD;
+  int      myid;
+  MPI_Comm_rank(comm, &myid);
+
+  const std::uint64_t count = (1ULL << 32) + 5;
+
+  if (myid == 0)
+    {
+      std::vector<short> buffer(count, 0);
+      buffer[count - 1] = 2;
+      int ierr          = MPI_Send_c(
+        buffer.data(), count, MPI_SHORT, 1 /* dest */, 0 /* tag */, comm);
+      CheckMPIFatal(ierr);
+    }
+  else if (myid == 1)
+    {
+      std::vector<short> buffer(count, 42);
+      int                ierr = MPI_Recv_c(buffer.data(),
+                            count,
+                            MPI_SHORT,
+                            0 /* src */,
+                            0 /* tag */,
+                            comm,
+                            MPI_STATUS_IGNORE);
+      CheckMPIFatal(ierr);
+
+      if (buffer[0] != 0 || buffer[count - 1] != 2)
+        {
+          std::cerr << "MPI RECEIVE WAS INVALID:" << buffer[0] << ' '
+                    << buffer[count - 1] << std::endl;
+          MPI_Abort(MPI_COMM_WORLD, 1);
+        }
+    }
+
+  if (myid == 0)
+    std::cout << "TEST send_and_recv: OK" << std::endl;
 }
 
 int
@@ -62,7 +103,8 @@ main(int argc, char *argv[])
 
   assert(ranks == 2);
 
-  test_send_recv();
+  test_send_recv_manual();
+  test_send_and_recv();
 
   MPI_Finalize();
   return 0;
