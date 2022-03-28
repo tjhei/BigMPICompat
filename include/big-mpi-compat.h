@@ -54,6 +54,9 @@ MPI_Type_contiguous_c(MPI_Count     count,
       int             ierr;
       const MPI_Count max_signed_int = (1U << 31) - 1;
 
+      MPI_Count size_old;
+      ierr = MPI_Type_size_x(oldtype, &size_old);
+
       MPI_Count n_chunks          = count / max_signed_int;
       MPI_Count n_bytes_remainder = count % max_signed_int;
 
@@ -76,7 +79,7 @@ MPI_Type_contiguous_c(MPI_Count     count,
 
       int          blocklengths[2]  = {1, 1};
       MPI_Aint     displacements[2] = {0,
-                                   static_cast<MPI_Aint>(n_chunks) *
+                                   static_cast<MPI_Aint>(n_chunks) * size_old *
                                      max_signed_int};
       MPI_Datatype types[2]         = {chunks, remainder};
       ierr =
@@ -107,9 +110,7 @@ MPI_Type_contiguous_c(MPI_Count     count,
         }
 
 #  ifndef MPI_COMPAT_SKIP_SIZE_CHECK
-
-      MPI_Count size_old, size_new;
-      ierr = MPI_Type_size_x(oldtype, &size_old);
+      MPI_Count size_new;
       ierr = MPI_Type_size_x(*newtype, &size_new);
 
       if (size_old * count != size_new)
