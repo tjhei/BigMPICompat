@@ -11,12 +11,12 @@
 
 #include <iostream>
 
-#define CheckMPIFatal(ierr)                                        \
-  if (ierr != MPI_SUCCESS)                                         \
-    {                                                              \
-      std::cerr << "MPI error " << ierr << " in line " << __LINE__ \
-                << std::endl;                                      \
-      MPI_Abort(MPI_COMM_WORLD, ierr);                             \
+#define CheckMPIFatal(ierr)                                                  \
+  if (ierr != MPI_SUCCESS)                                                   \
+    {                                                                        \
+      std::cerr << "MPI error " << ierr << " in line " << __LINE__ << " in " \
+                << __FILE__ << std::endl;                                    \
+      MPI_Abort(MPI_COMM_WORLD, ierr);                                       \
     }
 
 #if MPI_VERSION < 3
@@ -39,7 +39,8 @@
 namespace BigMPICompat
 {
   static constexpr MPI_Count mpi_max_signed_int = (1ULL << 31);
-}
+
+} // namespace BigMPICompat
 
 #if MPI_VERSION >= 4
 
@@ -146,6 +147,9 @@ MPI_Send_c(const void * buf,
   ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
   if (ierr != MPI_SUCCESS)
     return ierr;
+  ierr = MPI_Type_commit(&bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
 
   ierr = MPI_Send(buf, 1, bigtype, dest, tag, comm);
   if (ierr != MPI_SUCCESS)
@@ -172,6 +176,10 @@ MPI_Recv_c(void *       buf,
   MPI_Datatype bigtype;
   int          ierr;
   ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+  if (ierr != MPI_SUCCESS)
+    return ierr;
+
+  ierr = MPI_Type_commit(&bigtype);
   if (ierr != MPI_SUCCESS)
     return ierr;
 
