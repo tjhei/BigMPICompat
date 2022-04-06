@@ -195,4 +195,39 @@ MPI_Recv_c(void *       buf,
 
 #endif
 
+
+namespace BigMPICompat
+{
+  int
+  MPI_File_write_at_c(MPI_File     fh,
+                      MPI_Offset   offset,
+                      const void * buf,
+                      MPI_Count    count,
+                      MPI_Datatype datatype,
+                      MPI_Status * status)
+  {
+    if (count <= BigMPICompat::mpi_max_signed_int)
+      return MPI_File_write_at(fh, offset, buf, count, datatype, status);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_File_write_at(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
+} // namespace BigMPICompat
+
 #endif
