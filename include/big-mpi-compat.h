@@ -1,5 +1,8 @@
 /**
  */
+#ifndef BIG_MPI_COMPAT_H
+#define BIG_MPI_COMPAT_H
+
 
 #include <mpi.h>
 #ifndef MPI_VERSION
@@ -181,5 +184,7 @@ MPI_Recv_c(void *       buf,
     return ierr;
   return MPI_SUCCESS;
 }
+
+#endif
 
 #endif
