@@ -20,20 +20,7 @@
     }
 
 #if MPI_VERSION < 3
-
 #  error "We require at least MPI 3.0"
-
-#endif
-
-#if MPI_VERSION >= 4
-
-// int MPI_File_write_ordered_c(MPI_File fh, const void *buf, MPI_Count count,
-// MPI_Datatype datatype, MPI_Status *status)
-//{
-//}
-
-#else
-
 #endif
 
 namespace BigMPICompat
@@ -219,6 +206,65 @@ namespace BigMPICompat
       return ierr;
 
     ierr = MPI_File_write_at(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
+  int
+  MPI_File_write_at_all_c(MPI_File     fh,
+                          MPI_Offset   offset,
+                          const void * buf,
+                          MPI_Count    count,
+                          MPI_Datatype datatype,
+                          MPI_Status * status)
+  {
+    if (count <= BigMPICompat::mpi_max_signed_int)
+      return MPI_File_write_at_all(fh, offset, buf, count, datatype, status);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_File_write_at_all(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
+  int
+  MPI_File_write_ordered_c(MPI_File     fh,
+                           const void * buf,
+                           MPI_Count    count,
+                           MPI_Datatype datatype,
+                           MPI_Status * status)
+  {
+    if (count <= BigMPICompat::mpi_max_signed_int)
+      return MPI_File_write_ordered(fh, buf, count, datatype, status);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_File_write_ordered(fh, buf, 1, bigtype, status);
     if (ierr != MPI_SUCCESS)
       return ierr;
 
