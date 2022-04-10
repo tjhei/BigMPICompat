@@ -30,14 +30,11 @@ test_write_at(const std::uint64_t n_bytes)
 
   std::vector<char> buffer(n_bytes, '?');
   buffer[0] = 'A' + myid;
-#if MPI_VERSION >= 4
-  ierr = MPI_File_write_at_c(
+
+  ierr = BigMPICompat::MPI_File_write_at_c(
     fh, offset, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
+
   CheckMPIFatal(ierr);
-#else
-  (void)offset;
-  std::cerr << "native MPI_File_write_at_c not supported!" << std::endl;
-#endif
 
   ierr = MPI_File_sync(fh);
   CheckMPIFatal(ierr);
@@ -49,11 +46,10 @@ test_write_at(const std::uint64_t n_bytes)
       int result = system(
         "md5sum native-write-at.data | grep 4c1fe47ac9c80d7af0ea289c90e13132");
       if (result == 0)
-        std::cout << "native-io: md5sum: OK" << std::endl;
+        std::cout << "io: md5sum: OK" << std::endl;
       else
         {
-          std::cerr << "native-io: md5sum FAILED - result: " << result
-                    << std::endl;
+          std::cerr << "io: md5sum FAILED - result: " << result << std::endl;
           MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }

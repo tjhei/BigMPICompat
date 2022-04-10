@@ -8,7 +8,7 @@ find_package(MPI REQUIRED)
 message(STATUS "Found MPI version ${MPI_CXX_VERSION_MAJOR}.${MPI_CXX_VERSION_MINOR}")
 
 # tests
-SET(TESTS "tests/datatype.cxx" "tests/sendrecv.cxx" "tests/native-io.cxx")
+SET(TESTS "tests/datatype.cxx" "tests/sendrecv.cxx" "tests/native-io.cxx" "tests/io.cxx")
 SET(BINARIES "")
 
 foreach(TARGET_SRC ${TESTS})
@@ -42,6 +42,8 @@ add_custom_target(run
   COMMAND ./datatype
   COMMAND ${CMAKE_COMMAND} -E echo "test ok"
   COMMAND mpirun -n 2 ./sendrecv
+  COMMAND ${CMAKE_COMMAND} -E echo "test ok"
+  COMMAND mpirun -n 2 ./io
   COMMAND ${CMAKE_COMMAND} -E echo "test ok"
   COMMAND echo "all good!"
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
