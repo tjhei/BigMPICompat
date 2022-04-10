@@ -1,4 +1,8 @@
 /**
+ *
+ * BigMPICompat - a tiny MPI 4.x compatibility library
+ *
+ * Release under MIT at https://github.com/tjhei/BigMPICompat
  */
 #ifndef BIG_MPI_COMPAT_H
 #define BIG_MPI_COMPAT_H
@@ -20,12 +24,12 @@
     }
 
 #if MPI_VERSION < 3
-#  error "We require at least MPI 3.0"
+#  error "BigMPICompat requires at least MPI 3.0"
 #endif
 
 namespace BigMPICompat
 {
-  static constexpr MPI_Count mpi_max_signed_int = (1ULL << 31);
+  static constexpr MPI_Count mpi_max_count = (1ULL << 31);
 
 } // namespace BigMPICompat
 
@@ -38,7 +42,7 @@ MPI_Type_contiguous_c(MPI_Count     count,
                       MPI_Datatype  oldtype,
                       MPI_Datatype *newtype)
 {
-  if (count <= BigMPICompat::mpi_max_signed_int)
+  if (count <= BigMPICompat::mpi_max_count)
     return MPI_Type_contiguous(count, oldtype, newtype);
   else
     {
@@ -126,7 +130,7 @@ MPI_Send_c(const void * buf,
            int          tag,
            MPI_Comm     comm)
 {
-  if (count <= BigMPICompat::mpi_max_signed_int)
+  if (count <= BigMPICompat::mpi_max_count)
     return MPI_Send(buf, count, datatype, dest, tag, comm);
 
   MPI_Datatype bigtype;
@@ -157,7 +161,7 @@ MPI_Recv_c(void *       buf,
            MPI_Comm     comm,
            MPI_Status * status)
 {
-  if (count <= BigMPICompat::mpi_max_signed_int)
+  if (count <= BigMPICompat::mpi_max_count)
     return MPI_Recv(buf, count, datatype, source, tag, comm, status);
 
   MPI_Datatype bigtype;
@@ -193,7 +197,7 @@ namespace BigMPICompat
                       MPI_Datatype datatype,
                       MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_signed_int)
+    if (count <= BigMPICompat::mpi_max_count)
       return MPI_File_write_at(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -223,7 +227,7 @@ namespace BigMPICompat
                           MPI_Datatype datatype,
                           MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_signed_int)
+    if (count <= BigMPICompat::mpi_max_count)
       return MPI_File_write_at_all(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -252,7 +256,7 @@ namespace BigMPICompat
                            MPI_Datatype datatype,
                            MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_signed_int)
+    if (count <= BigMPICompat::mpi_max_count)
       return MPI_File_write_ordered(fh, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
