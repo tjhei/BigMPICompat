@@ -24,11 +24,11 @@ We also implement the following. As MPICH 4.0.x has these functions, but fails i
 ## Test results
 
 | version        | MPI support | native large transfer | native large IO           | tests                                   |
-|----------------+-------------+-----------------------+---------------------------+-----------------------------------------|
+|----------------|-------------|-----------------------|---------------------------|-----------------------------------------|
 | MPICH 3.0.4    |         3.0 |                       |                           | FAIL: MPI_Tye_contiguous_c wrong result |
 | MPICH 3.1.4    |         3.0 |                       |                           | OK                                      |
-| MPICH 3.2.1    |         3.1 |                       |                           |                                         |
-| MPICH 3.3.2    |             |                       |                           |                                         |
+| MPICH 3.2.1    |         3.1 |                       |                           | OK                                      |
+| MPICH 3.3.2    |         3.1 |                       |                           | OK                                      |
 | MPICH 3.4.3    |         3.1 |                       |                           | OK                                      |
 | MPICH 4.0.1    |         4.0 | OK                    | FAIL: Assert inside MPICH | OK                                      |
 | OpenMPI 1.8.8  |         3.0 |                       |                           | FAIL: MPI_Tye_contiguous_c wrong result |
