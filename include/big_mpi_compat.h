@@ -47,7 +47,7 @@ namespace BigMPICompat
  *
  * See the MPI 4.x standard for details.
  */
-int
+inline int
 MPI_Type_contiguous_c(MPI_Count     count,
                       MPI_Datatype  oldtype,
                       MPI_Datatype *newtype)
@@ -137,7 +137,7 @@ MPI_Type_contiguous_c(MPI_Count     count,
  *
  * See the MPI 4.x standard for details.
  */
-int
+inline int
 MPI_Send_c(const void * buf,
            MPI_Count    count,
            MPI_Datatype datatype,
@@ -172,7 +172,7 @@ MPI_Send_c(const void * buf,
  *
  * See the MPI 4.x standard for details.
  */
-int
+inline int
 MPI_Recv_c(void *       buf,
            MPI_Count    count,
            MPI_Datatype datatype,
@@ -214,7 +214,7 @@ namespace BigMPICompat
    *
    * See the MPI 4.x standard for details.
    */
-  int
+  inline int
   MPI_File_write_at_c(MPI_File     fh,
                       MPI_Offset   offset,
                       const void * buf,
@@ -250,7 +250,7 @@ namespace BigMPICompat
    *
    * See the MPI 4.x standard for details.
    */
-  int
+  inline int
   MPI_File_write_at_all_c(MPI_File     fh,
                           MPI_Offset   offset,
                           const void * buf,
@@ -285,7 +285,7 @@ namespace BigMPICompat
    *
    * See the MPI 4.x standard for details.
    */
-  int
+  inline int
   MPI_File_write_ordered_c(MPI_File     fh,
                            const void * buf,
                            MPI_Count    count,
