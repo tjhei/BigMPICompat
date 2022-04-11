@@ -1,4 +1,4 @@
-#include <big-mpi-compat.h>
+#include <big_mpi_compat.h>
 
 #include <cassert>
 #include <iostream>
