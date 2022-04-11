@@ -27,6 +27,11 @@
 #  error "BigMPICompat requires at least MPI 3.0"
 #endif
 
+/**
+ * This namespace contains symbols related to the BigMPICompat library
+ * to support large MPI routines on MPI implementations that implement
+ * version 3.x of the standard.
+ */
 namespace BigMPICompat
 {
   static constexpr MPI_Count mpi_max_count = (1ULL << 31);
@@ -37,6 +42,11 @@ namespace BigMPICompat
 
 #else
 
+/**
+ * Create a contiguous type of (possibly large) @p count.
+ *
+ * See the MPI 4.x standard for details.
+ */
 int
 MPI_Type_contiguous_c(MPI_Count     count,
                       MPI_Datatype  oldtype,
@@ -122,6 +132,11 @@ MPI_Type_contiguous_c(MPI_Count     count,
     }
 }
 
+/**
+ * Send a package to rank @p dest with a (possibly large) @p count.
+ *
+ * See the MPI 4.x standard for details.
+ */
 int
 MPI_Send_c(const void * buf,
            MPI_Count    count,
@@ -152,6 +167,11 @@ MPI_Send_c(const void * buf,
   return MPI_SUCCESS;
 }
 
+/**
+ * Receive a package from rank @p source with a (possibly large) @p count.
+ *
+ * See the MPI 4.x standard for details.
+ */
 int
 MPI_Recv_c(void *       buf,
            MPI_Count    count,
@@ -189,6 +209,11 @@ MPI_Recv_c(void *       buf,
 
 namespace BigMPICompat
 {
+  /**
+   * Write a possibly large @p count of data at the location @p offset.
+   *
+   * See the MPI 4.x standard for details.
+   */
   int
   MPI_File_write_at_c(MPI_File     fh,
                       MPI_Offset   offset,
@@ -219,6 +244,12 @@ namespace BigMPICompat
     return MPI_SUCCESS;
   }
 
+  /**
+   * Collectively write a possibly large @p count of data at the
+   * location @p offset.
+   *
+   * See the MPI 4.x standard for details.
+   */
   int
   MPI_File_write_at_all_c(MPI_File     fh,
                           MPI_Offset   offset,
@@ -249,6 +280,11 @@ namespace BigMPICompat
     return MPI_SUCCESS;
   }
 
+  /**
+   * Collectively write a possibly large @p count of data in order.
+   *
+   * See the MPI 4.x standard for details.
+   */
   int
   MPI_File_write_ordered_c(MPI_File     fh,
                            const void * buf,
