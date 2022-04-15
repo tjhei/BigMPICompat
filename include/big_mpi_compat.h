@@ -314,6 +314,68 @@ namespace BigMPICompat
     return MPI_SUCCESS;
   }
 
+
+
+  inline int
+  MPI_File_read_at_c(MPI_File     fh,
+                      MPI_Offset   offset,
+                      void * buf,
+                      MPI_Count    count,
+                      MPI_Datatype datatype,
+                      MPI_Status * status)
+  {
+    if (count <= BigMPICompat::mpi_max_count)
+      return MPI_File_read_at(fh, offset, buf, count, datatype, status);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_File_read_at(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
+  inline int
+  MPI_File_read_at_all_c(MPI_File     fh,
+                      MPI_Offset   offset,
+                      void * buf,
+                      MPI_Count    count,
+                      MPI_Datatype datatype,
+                      MPI_Status * status)
+  {
+    if (count <= BigMPICompat::mpi_max_count)
+      return MPI_File_read_at_all(fh, offset, buf, count, datatype, status);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_File_read_at_all(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
 } // namespace BigMPICompat
 
 #endif
