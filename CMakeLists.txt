@@ -37,9 +37,9 @@ add_custom_target(indent
 add_custom_target(run
   DEPENDS ${BINARIES}
   VERBATIM
-  COMMAND ./mpiinfo
+  COMMAND mpirun -n 1 ./mpiinfo
   COMMAND ${CMAKE_COMMAND} -E echo "Running tests..."
-  COMMAND ./datatype
+  COMMAND mpirun -n 1 ./datatype
   COMMAND ${CMAKE_COMMAND} -E echo "test ok"
   COMMAND mpirun -n 2 ./sendrecv
   COMMAND ${CMAKE_COMMAND} -E echo "test ok"
