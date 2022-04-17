@@ -318,11 +318,11 @@ namespace BigMPICompat
 
   inline int
   MPI_File_read_at_c(MPI_File     fh,
-                      MPI_Offset   offset,
-                      void * buf,
-                      MPI_Count    count,
-                      MPI_Datatype datatype,
-                      MPI_Status * status)
+                     MPI_Offset   offset,
+                     void *       buf,
+                     MPI_Count    count,
+                     MPI_Datatype datatype,
+                     MPI_Status * status)
   {
     if (count <= BigMPICompat::mpi_max_count)
       return MPI_File_read_at(fh, offset, buf, count, datatype, status);
@@ -348,11 +348,11 @@ namespace BigMPICompat
 
   inline int
   MPI_File_read_at_all_c(MPI_File     fh,
-                      MPI_Offset   offset,
-                      void * buf,
-                      MPI_Count    count,
-                      MPI_Datatype datatype,
-                      MPI_Status * status)
+                         MPI_Offset   offset,
+                         void *       buf,
+                         MPI_Count    count,
+                         MPI_Datatype datatype,
+                         MPI_Status * status)
   {
     if (count <= BigMPICompat::mpi_max_count)
       return MPI_File_read_at_all(fh, offset, buf, count, datatype, status);

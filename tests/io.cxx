@@ -20,12 +20,8 @@ test_write(const std::uint64_t n_bytes, const std::string &command)
   ierr = MPI_Info_create(&info);
   CheckMPIFatal(ierr);
 
-  ierr =
-    MPI_File_open(MPI_COMM_WORLD,
-                  "io.data",
-                  MPI_MODE_CREATE | MPI_MODE_WRONLY,
-                  info,
-                  &fh);
+  ierr = MPI_File_open(
+    MPI_COMM_WORLD, "io.data", MPI_MODE_CREATE | MPI_MODE_WRONLY, info, &fh);
   CheckMPIFatal(ierr);
 
   std::vector<char> buffer(n_bytes, '?');
@@ -88,12 +84,11 @@ test_read(const std::uint64_t n_bytes, const std::string &command)
   ierr = MPI_Info_create(&info);
   CheckMPIFatal(ierr);
 
-  ierr =
-    MPI_File_open(MPI_COMM_WORLD,
-                  "io.data",
-                  MPI_MODE_DELETE_ON_CLOSE | MPI_MODE_RDONLY,
-                  info,
-                  &fh);
+  ierr = MPI_File_open(MPI_COMM_WORLD,
+                       "io.data",
+                       MPI_MODE_DELETE_ON_CLOSE | MPI_MODE_RDONLY,
+                       info,
+                       &fh);
   CheckMPIFatal(ierr);
 
   std::vector<char> buffer(n_bytes, '?');
@@ -126,13 +121,13 @@ main(int argc, char *argv[])
   test_write((1ULL << 32) + 2, "write_at");
   std::cout << "in script write at done. " << std::endl;
 
-  test_read((1ULL << 32) + 2,"read_at"); 
+  test_read((1ULL << 32) + 2, "read_at");
   std::cout << "in script read at done. " << std::endl;
 
   test_write((1ULL << 32) + 2, "write_at_all");
   std::cout << "in script write at all done. " << std::endl;
 
-  test_read((1ULL << 32) + 2,"read_at_all"); 
+  test_read((1ULL << 32) + 2, "read_at_all");
   std::cout << "in script read at all done. " << std::endl;
 
   MPI_Finalize();
