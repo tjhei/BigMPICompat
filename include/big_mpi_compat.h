@@ -309,6 +309,12 @@ namespace BigMPICompat
 
 
 
+  /**
+   * Read a possibly large @p count of data at the
+   * location @p offset.
+   *
+   * See the MPI 4.x standard for details.
+   */
   inline int
   MPI_File_read_at_c(MPI_File     fh,
                      MPI_Offset   offset,
@@ -339,6 +345,12 @@ namespace BigMPICompat
     return MPI_SUCCESS;
   }
 
+  /**
+   * Collectively read a possibly large @p count of data at the
+   * location @p offset.
+   *
+   * See the MPI 4.x standard for details.
+   */
   inline int
   MPI_File_read_at_all_c(MPI_File     fh,
                          MPI_Offset   offset,
