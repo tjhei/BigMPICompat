@@ -15,13 +15,6 @@
 
 #include <iostream>
 
-#define CheckMPIFatal(ierr)                                                  \
-  if (ierr != MPI_SUCCESS)                                                   \
-    {                                                                        \
-      std::cerr << "MPI error " << ierr << " in line " << __LINE__ << " in " \
-                << __FILE__ << std::endl;                                    \
-      MPI_Abort(MPI_COMM_WORLD, ierr);                                       \
-    }
 
 #if MPI_VERSION < 3
 #  error "BigMPICompat requires at least MPI 3.0"

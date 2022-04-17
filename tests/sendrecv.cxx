@@ -1,8 +1,6 @@
 #include <big_mpi_compat.h>
 
-#include <cassert>
-#include <iostream>
-#include <vector>
+#include "common.h"
 
 
 void

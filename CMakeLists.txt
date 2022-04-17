@@ -30,7 +30,7 @@ target_compile_options(${TARGET} PRIVATE ${MPI_CXX_COMPILE_FLAGS} "-Wall" "-O2")
 target_link_libraries(${TARGET} ${MPI_CXX_LIBRARIES} ${MPI_CXX_LINK_FLAGS} "-Wall" "-O2")
 
 add_custom_target(indent
-  COMMAND clang-format-10 "-i" "include/*.h" "source/*.cxx" "tests/*.cxx"
+  COMMAND clang-format-10 "-i" "include/*.h" "source/*.cxx" "tests/*.cxx" "tests/*.h"
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # run all tests

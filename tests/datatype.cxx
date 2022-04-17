@@ -1,7 +1,6 @@
 #include <big_mpi_compat.h>
 
-#include <cassert>
-#include <iostream>
+#include "common.h"
 
 void
 test_create_data_type(const std::uint64_t n_bytes, int myrank)
