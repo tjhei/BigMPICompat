@@ -307,8 +307,6 @@ namespace BigMPICompat
     return MPI_SUCCESS;
   }
 
-
-
   /**
    * Read a possibly large @p count of data at the
    * location @p offset.
@@ -372,6 +370,41 @@ namespace BigMPICompat
       return ierr;
 
     ierr = MPI_File_read_at_all(fh, offset, buf, 1, bigtype, status);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Type_free(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    return MPI_SUCCESS;
+  }
+
+  /**
+   * Broadcast a message of possibly large @p count of data from
+   * the process with rank "root" to all other processes.
+   *
+   * See the MPI 4.x standard for details.
+   */
+  inline int
+  MPI_Bcast_c(void *       buf,
+              MPI_Count    count,
+              MPI_Datatype datatype,
+              unsigned int root_mpi_rank,
+              MPI_Comm     comm)
+  {
+    if (count <= BigMPICompat::mpi_max_count)
+      return MPI_Bcast(buf, count, datatype, root_mpi_rank, comm);
+
+    MPI_Datatype bigtype;
+    int          ierr;
+    ierr = MPI_Type_contiguous_c(count, datatype, &bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+    ierr = MPI_Type_commit(&bigtype);
+    if (ierr != MPI_SUCCESS)
+      return ierr;
+
+    ierr = MPI_Bcast(buf, count, datatype, root_mpi_rank, comm);
     if (ierr != MPI_SUCCESS)
       return ierr;
 
