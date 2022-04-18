@@ -222,7 +222,7 @@ MPI_Bcast_c(void *       buf,
   if (ierr != MPI_SUCCESS)
     return ierr;
 
-  ierr = MPI_Bcast(buf, count, datatype, root_mpi_rank, comm);
+  ierr = MPI_Bcast(buf, 1, bigtype, root_mpi_rank, comm);
   if (ierr != MPI_SUCCESS)
     return ierr;
 
