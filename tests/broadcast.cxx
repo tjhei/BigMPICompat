@@ -15,7 +15,8 @@ test()
   if (myid == 0)
     {
       std::vector<short> buffer(count, 0);
-      buffer[count - 1] = 2;
+      buffer[1]         = 1;
+      buffer[count - 1] = 99;
       int ierr          = MPI_Bcast_c(buffer.data(),
                              count,
                              MPI_SHORT,
@@ -33,10 +34,10 @@ test()
                              comm);
       CheckMPIFatal(ierr);
 
-      if (buffer[0] != 0 || buffer[count - 1] != 2)
+      if (buffer[0] != 0 || buffer[1] != 1 || buffer[count - 1] != 99)
         {
-          std::cerr << "MPI BCAST WAS INVALID:" << buffer[0] << ' '
-                    << buffer[count - 1] << std::endl;
+          std::cerr << "MPI BCAST WAS INVALID:" << buffer[0] << ' ' << buffer[1]
+                    << ' ' << buffer[count - 1] << std::endl;
           MPI_Abort(MPI_COMM_WORLD, 1);
         }
     }
