@@ -19,7 +19,11 @@ We also implement the following. As MPICH 4.0.x has these functions, but fails i
 
 ## About
 
-- Requires OpenMPI 3.0.x or MPICH 3.1.x or newer
+- Usage: just include the single header file in your code
+- Requirements: OpenMPI 3.0.x or MPICH 3.1.x or newer
+
+This projects was made to allow for large MPI communication in the [https://dealii.org](deal.II) library. The project is heavily inspired by the [https://github.com/jeffhammond/BigMPI](BigMPI library).
+
 
 ## Test results
 
