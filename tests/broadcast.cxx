@@ -17,21 +17,21 @@ test()
       std::vector<short> buffer(count, 0);
       buffer[1]         = 1;
       buffer[count - 1] = 99;
-      int ierr          = MPI_Bcast_c(buffer.data(),
-                             count,
-                             MPI_SHORT,
-                             0, /* root */
-                             comm);
+      int ierr          = BigMPICompat::MPI_Bcast_c(buffer.data(),
+                                           count,
+                                           MPI_SHORT,
+                                           0, /* root */
+                                           comm);
       CheckMPIFatal(ierr);
     }
   else
     {
       std::vector<short> buffer(count, 42);
-      int                ierr = MPI_Bcast_c(buffer.data(),
-                             count,
-                             MPI_SHORT,
-                             0, /* root */
-                             comm);
+      int                ierr = BigMPICompat::MPI_Bcast_c(buffer.data(),
+                                           count,
+                                           MPI_SHORT,
+                                           0, /* root */
+                                           comm);
       CheckMPIFatal(ierr);
 
       if (buffer[0] != 0 || buffer[1] != 1 || buffer[count - 1] != 99)
