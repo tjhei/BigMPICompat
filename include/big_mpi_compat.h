@@ -2,7 +2,7 @@
  *
  * BigMPICompat - a tiny MPI 4.x compatibility library
  *
- * Release under MIT at https://github.com/tjhei/BigMPICompat
+ * Released under MIT license at https://github.com/tjhei/BigMPICompat
  */
 #ifndef BIG_MPI_COMPAT_H
 #define BIG_MPI_COMPAT_H
@@ -12,9 +12,6 @@
 #ifndef MPI_VERSION
 #  error "Your MPI implementation does not define MPI_VERSION!"
 #endif
-
-#include <iostream>
-
 
 #if MPI_VERSION < 3
 #  error "BigMPICompat requires at least MPI 3.0"
@@ -62,18 +59,12 @@ MPI_Type_contiguous_c(MPI_Count     count,
       ierr = MPI_Type_vector(
         n_chunks, max_signed_int, max_signed_int, oldtype, &chunks);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_vector() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
 
       MPI_Datatype remainder;
       ierr = MPI_Type_contiguous(n_bytes_remainder, oldtype, &remainder);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_contiguous() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
 
       int          blocklengths[2]  = {1, 1};
       MPI_Aint     displacements[2] = {0,
@@ -83,40 +74,35 @@ MPI_Type_contiguous_c(MPI_Count     count,
       ierr =
         MPI_Type_create_struct(2, blocklengths, displacements, types, newtype);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_contiguous() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
+
       ierr = MPI_Type_commit(newtype);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_contiguous() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
 
       ierr = MPI_Type_free(&chunks);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_contiguous() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
+
       ierr = MPI_Type_free(&remainder);
       if (ierr != MPI_SUCCESS)
-        {
-          std::cerr << "MPI_Type_contiguous() call failed!" << std::endl;
-          return ierr;
-        }
+        return ierr;
 
 #  ifndef MPI_COMPAT_SKIP_SIZE_CHECK
       MPI_Count size_new;
       ierr = MPI_Type_size_x(*newtype, &size_new);
+      if (ierr != MPI_SUCCESS)
+        return ierr;
 
       if (size_old * count != size_new)
         {
-          std::cerr
-            << "MPI_Type_contiguous_c() produced an invalid result. Expected = "
-            << size_old << " * " << count << " = " << size_old * count
-            << " but received " << size_new << std::endl;
+          // This error can happen when you are using a very old and
+          // buggy MPI implementation. There is nothing we can do
+          // here, unfortunately. Please update your installation.
+          //	  std::cerr
+          //<< "MPI_Type_contiguous_c() produced an invalid result. Expected = "
+          //<< size_old << " * " << count << " = " << size_old * count
+          //<< " but received " << size_new << std::endl;
           return MPI_ERR_INTERN;
         }
 #  endif
