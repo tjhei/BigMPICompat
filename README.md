@@ -8,11 +8,11 @@ standard 3.0 only.
 
 The list of supported routines is incomplete. The following functions
 are added for MPI implementations that are 3.x:
-- MPI_Type_contiguous_c
-- MPI_Send_c
-- MPI_Recv_c
+- BigMPICompat::MPI_Type_contiguous_c
+- BigMPICompat::MPI_Send_c
+- BigMPICompat::MPI_Recv_c
 
-We also implement the following. As MPICH 4.0.x has these functions, but fails in any large IO operation, we put the correct implementation in a namespace:
+We also implement the following. As MPICH 4.0.x has these functions, but fails in any large IO operation, we supply an alternative implementatin for it as well:
 - BigMPICompat::MPI_File_write_at_c
 - BigMPICompat::MPI_File_write_at_all_c
 - BigMPICompat::MPI_File_write_ordered_c
@@ -22,7 +22,7 @@ We also implement the following. As MPICH 4.0.x has these functions, but fails i
 - Usage: just include the single header file in your code
 - Requirements: OpenMPI 3.0.x or MPICH 3.1.x or newer
 
-This projects was made to allow for large MPI communication in the [https://dealii.org](deal.II) library. The project is heavily inspired by the [https://github.com/jeffhammond/BigMPI](BigMPI library).
+This projects was made to allow for large MPI communication in the [deal.II](https://dealii.org) library. The project is heavily inspired by the [BigMPI library](https://github.com/jeffhammond/BigMPI).
 
 
 ## Test results
