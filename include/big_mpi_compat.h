@@ -7,8 +7,10 @@
 #ifndef BIG_MPI_COMPAT_H
 #define BIG_MPI_COMPAT_H
 
-
+// required for std::numeric_limits used below.
 #include <mpi.h>
+
+#include <limits>
 #ifndef MPI_VERSION
 #  error "Your MPI implementation does not define MPI_VERSION!"
 #endif
@@ -24,7 +26,8 @@
  */
 namespace BigMPICompat
 {
-  static constexpr MPI_Count mpi_max_count = (1ULL << 31);
+  static constexpr MPI_Count mpi_max_int_count =
+    std::numeric_limits<int>::max();
 
 } // namespace BigMPICompat
 
@@ -42,18 +45,18 @@ MPI_Type_contiguous_c(MPI_Count     count,
                       MPI_Datatype  oldtype,
                       MPI_Datatype *newtype)
 {
-  if (count <= BigMPICompat::mpi_max_count)
+  if (count <= BigMPICompat::mpi_max_int_count)
     return MPI_Type_contiguous(count, oldtype, newtype);
   else
     {
       int             ierr;
-      const MPI_Count max_signed_int = (1U << 31) - 1;
+      const MPI_Count max_signed_int = BigMPICompat::mpi_max_int_count;
 
       MPI_Count size_old;
       ierr = MPI_Type_size_x(oldtype, &size_old);
 
-      MPI_Count n_chunks          = count / max_signed_int;
-      MPI_Count n_bytes_remainder = count % max_signed_int;
+      MPI_Count n_chunks             = count / max_signed_int;
+      MPI_Count n_remaining_elements = count % max_signed_int;
 
       MPI_Datatype chunks;
       ierr = MPI_Type_vector(
@@ -62,7 +65,7 @@ MPI_Type_contiguous_c(MPI_Count     count,
         return ierr;
 
       MPI_Datatype remainder;
-      ierr = MPI_Type_contiguous(n_bytes_remainder, oldtype, &remainder);
+      ierr = MPI_Type_contiguous(n_remaining_elements, oldtype, &remainder);
       if (ierr != MPI_SUCCESS)
         return ierr;
 
@@ -124,7 +127,7 @@ MPI_Send_c(const void * buf,
            int          tag,
            MPI_Comm     comm)
 {
-  if (count <= BigMPICompat::mpi_max_count)
+  if (count <= BigMPICompat::mpi_max_int_count)
     return MPI_Send(buf, count, datatype, dest, tag, comm);
 
   MPI_Datatype bigtype;
@@ -160,7 +163,7 @@ MPI_Recv_c(void *       buf,
            MPI_Comm     comm,
            MPI_Status * status)
 {
-  if (count <= BigMPICompat::mpi_max_count)
+  if (count <= BigMPICompat::mpi_max_int_count)
     return MPI_Recv(buf, count, datatype, source, tag, comm, status);
 
   MPI_Datatype bigtype;
@@ -196,7 +199,7 @@ MPI_Bcast_c(void *       buf,
             unsigned int root_mpi_rank,
             MPI_Comm     comm)
 {
-  if (count <= BigMPICompat::mpi_max_count)
+  if (count <= BigMPICompat::mpi_max_int_count)
     return MPI_Bcast(buf, count, datatype, root_mpi_rank, comm);
 
   MPI_Datatype bigtype;
@@ -235,7 +238,7 @@ namespace BigMPICompat
                       MPI_Datatype datatype,
                       MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_count)
+    if (count <= BigMPICompat::mpi_max_int_count)
       return MPI_File_write_at(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -271,7 +274,7 @@ namespace BigMPICompat
                           MPI_Datatype datatype,
                           MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_count)
+    if (count <= BigMPICompat::mpi_max_int_count)
       return MPI_File_write_at_all(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -305,7 +308,7 @@ namespace BigMPICompat
                            MPI_Datatype datatype,
                            MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_count)
+    if (count <= BigMPICompat::mpi_max_int_count)
       return MPI_File_write_ordered(fh, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -341,7 +344,7 @@ namespace BigMPICompat
                      MPI_Datatype datatype,
                      MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_count)
+    if (count <= BigMPICompat::mpi_max_int_count)
       return MPI_File_read_at(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
@@ -377,7 +380,7 @@ namespace BigMPICompat
                          MPI_Datatype datatype,
                          MPI_Status * status)
   {
-    if (count <= BigMPICompat::mpi_max_count)
+    if (count <= BigMPICompat::mpi_max_int_count)
       return MPI_File_read_at_all(fh, offset, buf, count, datatype, status);
 
     MPI_Datatype bigtype;
