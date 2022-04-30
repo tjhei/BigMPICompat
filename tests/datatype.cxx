@@ -6,15 +6,22 @@ void
 test_create_data_type(const std::uint64_t n_bytes, int myrank)
 {
   MPI_Datatype bigtype;
-  //  make_large_MPI_type(n_bytes, &bigtype);
-  MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
-  MPI_Type_commit(&bigtype);
+  int          ierr = MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
+  if (ierr != MPI_SUCCESS)
+    {
+      std::cout
+        << "MPI_Type_contiguous_c failed, probably because your MPI implementation is broken!"
+        << std::endl;
+    }
+  CheckMPIFatal(ierr);
+  ierr = MPI_Type_commit(&bigtype);
+  CheckMPIFatal(ierr);
 
   if (myrank == 0)
     std::cout << "Test creating big data type: n_bytes=" << n_bytes;
 
   int size32;
-  int ierr = MPI_Type_size(bigtype, &size32);
+  ierr = MPI_Type_size(bigtype, &size32);
   CheckMPIFatal(ierr);
 
   if (myrank == 0)
@@ -51,6 +58,8 @@ main(int argc, char *argv[])
 {
   MPI_Init(&argc, &argv);
 
+  test_create_data_type(1ULL << 31, 0);
+  test_create_data_type(1ULL << 32, 0);
   test_create_data_type(1ULL << 33, 0);
 
   MPI_Finalize();

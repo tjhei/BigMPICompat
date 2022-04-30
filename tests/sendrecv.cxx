@@ -12,8 +12,10 @@ test_send_recv_manual()
 
   const std::uint64_t n_bytes = (1ULL << 32) + 5;
   MPI_Datatype        bigtype;
-  MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
-  MPI_Type_commit(&bigtype);
+  int                 ierr = MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
+  CheckMPIFatal(ierr);
+  ierr = MPI_Type_commit(&bigtype);
+  CheckMPIFatal(ierr);
 
   if (myid == 0)
     {
@@ -43,7 +45,8 @@ test_send_recv_manual()
         }
     }
 
-  MPI_Type_free(&bigtype);
+  ierr = MPI_Type_free(&bigtype);
+  CheckMPIFatal(ierr);
 
   if (myid == 0)
     std::cout << "TEST send_recv_manual: OK" << std::endl;
