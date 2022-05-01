@@ -30,8 +30,6 @@ test_create_data_type(const std::uint64_t n_bytes, int myrank)
         std::cout << " size32=UNDEFINED (too big)";
       else
         std::cout << " size32=" << size32;
-
-      assert(size32 == MPI_UNDEFINED);
     }
 
   MPI_Count size64 = -1;
@@ -58,6 +56,7 @@ main(int argc, char *argv[])
 {
   MPI_Init(&argc, &argv);
 
+  test_create_data_type((1ULL << 31) - 1, 0);
   test_create_data_type(1ULL << 31, 0);
   test_create_data_type(1ULL << 32, 0);
   test_create_data_type(1ULL << 33, 0);
