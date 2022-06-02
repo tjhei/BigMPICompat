@@ -6,7 +6,7 @@ void
 test_create_data_type(const std::uint64_t n_bytes, int myrank)
 {
   MPI_Datatype bigtype;
-  int ierr = BigMPICompat::MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
+  int ierr = BigMPICompat::Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
   if (ierr != MPI_SUCCESS)
     {
       std::cout

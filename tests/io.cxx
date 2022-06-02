@@ -30,15 +30,15 @@ test_read_write(const std::uint64_t n_bytes, const std::string &command)
   buffer[0] = 'A' + myid;
 
   if (command == "at")
-    ierr = BigMPICompat::MPI_File_write_at_c(
+    ierr = BigMPICompat::File_write_at_c(
       fh, offset, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
   else if (command == "at_all")
-    ierr = BigMPICompat::MPI_File_write_at_all_c(
+    ierr = BigMPICompat::File_write_at_all_c(
       fh, offset, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
   else if (command == "write_ordered")
     {
       (void)offset;
-      ierr = BigMPICompat::MPI_File_write_ordered_c(
+      ierr = BigMPICompat::File_write_ordered_c(
         fh, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
     }
   else
@@ -54,10 +54,10 @@ test_read_write(const std::uint64_t n_bytes, const std::string &command)
   {
     std::vector<char> buffer(n_bytes);
     if (command == "at")
-      ierr = BigMPICompat::MPI_File_read_at_c(
+      ierr = BigMPICompat::File_read_at_c(
         fh, offset, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
     else if (command == "at_all")
-      ierr = BigMPICompat::MPI_File_read_at_all_c(
+      ierr = BigMPICompat::File_read_at_all_c(
         fh, offset, buffer.data(), buffer.size(), MPI_CHAR, MPI_STATUS_IGNORE);
     else
       MPI_Abort(MPI_COMM_WORLD, 1);

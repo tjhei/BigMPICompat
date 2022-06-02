@@ -12,7 +12,7 @@ test_send_recv_manual()
 
   const std::uint64_t n_bytes = (1ULL << 32) + 5;
   MPI_Datatype        bigtype;
-  int ierr = BigMPICompat::MPI_Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
+  int ierr = BigMPICompat::Type_contiguous_c(n_bytes, MPI_CHAR, &bigtype);
   CheckMPIFatal(ierr);
   ierr = MPI_Type_commit(&bigtype);
   CheckMPIFatal(ierr);
@@ -65,20 +65,20 @@ test_send_and_recv()
     {
       std::vector<short> buffer(count, 0);
       buffer[count - 1] = 2;
-      int ierr          = BigMPICompat::MPI_Send_c(
+      int ierr          = BigMPICompat::Send_c(
         buffer.data(), count, MPI_SHORT, 1 /* dest */, 0 /* tag */, comm);
       CheckMPIFatal(ierr);
     }
   else if (myid == 1)
     {
       std::vector<short> buffer(count, 42);
-      int                ierr = BigMPICompat::MPI_Recv_c(buffer.data(),
-                                          count,
-                                          MPI_SHORT,
-                                          0 /* src */,
-                                          0 /* tag */,
-                                          comm,
-                                          MPI_STATUS_IGNORE);
+      int                ierr = BigMPICompat::Recv_c(buffer.data(),
+                                      count,
+                                      MPI_SHORT,
+                                      0 /* src */,
+                                      0 /* tag */,
+                                      comm,
+                                      MPI_STATUS_IGNORE);
       CheckMPIFatal(ierr);
 
       if (buffer[0] != 0 || buffer[count - 1] != 2)

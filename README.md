@@ -8,14 +8,14 @@ standard 3.0 only.
 
 The list of supported routines is incomplete. The following functions
 are added for MPI implementations that are 3.x:
-- BigMPICompat::MPI_Type_contiguous_c
-- BigMPICompat::MPI_Send_c
-- BigMPICompat::MPI_Recv_c
+- BigMPICompat::Type_contiguous_c
+- BigMPICompat::Send_c
+- BigMPICompat::Recv_c
 
 We also implement the following. As MPICH 4.0.x has these functions, but fails in any large IO operation, we supply an alternative implementatin for it as well:
-- BigMPICompat::MPI_File_write_at_c
-- BigMPICompat::MPI_File_write_at_all_c
-- BigMPICompat::MPI_File_write_ordered_c
+- BigMPICompat::File_write_at_c
+- BigMPICompat::File_write_at_all_c
+- BigMPICompat::File_write_ordered_c
 
 ## About
 
