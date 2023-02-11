@@ -8,7 +8,7 @@ find_package(MPI REQUIRED)
 message(STATUS "Found MPI version ${MPI_CXX_VERSION_MAJOR}.${MPI_CXX_VERSION_MINOR}")
 
 # tests
-SET(TESTS "tests/datatype.cxx" "tests/sendrecv.cxx" "tests/native-io.cxx" "tests/io.cxx" "tests/broadcast.cxx")
+SET(TESTS "tests/datatype.cxx" "tests/sendrecv.cxx" "tests/native-io.cxx" "tests/io.cxx" "tests/broadcast.cxx" "tests/native-sendrecv.cxx")
 SET(BINARIES "")
 
 foreach(TARGET_SRC ${TESTS})
